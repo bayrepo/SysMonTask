@@ -1,7 +1,7 @@
 exp.py
 exp.glade
 exp.glade~
-netSidepane.glade~ 
+netSidepane.glade~
 disk.glade~
 taskManager.glade~
 taskManger.py
@@ -45,3 +45,4 @@ var/
 
 .vscode/
 .buildconfig
+.zed
