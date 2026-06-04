@@ -282,7 +282,7 @@ class myclass:
             'cpu':'cpu',
             'memory':'memory',
             }
-        if self.isNvidiagpu:
+        if self.isNvidiagpu or self.isAMDgpu:
             self.grouping_for_color_profile[self.gpuName]='gpu'
         for i in self.disklist:
             self.grouping_for_color_profile[i]='disk'
@@ -539,9 +539,18 @@ class myclass:
         self.stack_counter=2
 
         # Destroying the all the except CPU and Memory
-        if(self.isNvidiagpu==1):
-            g.Widget.destroy(self.gpuWidget)
-            g.Widget.destroy(self.gpuSidePaneWidget)
+        if(self.isNvidiagpu==1 or self.isAMDgpu==1):
+            if hasattr(self, 'gpuWidget'):
+                g.Widget.destroy(self.gpuWidget)
+                # Remove GPU from performanceStack before destroying
+                try:
+                    self.performanceStack.remove(self.gpuWidget)
+                except Exception as e:
+                    pass
+            if hasattr(self, 'gpuSidePaneWidget'):
+                g.Widget.destroy(self.gpuSidePaneWidget)
+            if hasattr(self, 'gpuSwitcherButton'):
+                g.Widget.destroy(self.gpuSwitcherButton)
         for i in range(0,self.numOfDisks):
             g.Widget.destroy(self.diskWidgetList[i])
             g.Widget.destroy(self.diskSidepaneWidgetList[i])
@@ -685,7 +694,7 @@ class myclass:
         self.disktabUpdate()
         if len(self.netNameList)!=0:
             self.netTabUpdate()
-        if(self.isNvidiagpu==1):
+        if(self.isNvidiagpu==1 or self.isAMDgpu==1):
             self.gpuTabUpdate()
         self.sidepaneUpdate()
 
@@ -704,7 +713,7 @@ class myclass:
         for i in range(0,self.numOfNets):
             g.Widget.queue_draw(self.netWidgetList[i].netdrawarea)
 
-        if(self.isNvidiagpu==1):
+        if(self.isNvidiagpu==1 or self.isAMDgpu==1):
             g.Widget.queue_draw(self.gpuWidget.gpuutildrawarea)
             g.Widget.queue_draw(self.gpuWidget.gpuvramdrawarea)
             g.Widget.queue_draw(self.gpuWidget.gpuencodingdrawarea)
@@ -718,7 +727,7 @@ class myclass:
             g.Widget.queue_draw(self.diskSidepaneWidgetList[i].disksidepanedrawarea)
         for i in range(self.numOfNets):
             g.Widget.queue_draw(self.netSidepaneWidgetList[i].netsidepanedrawarea)
-        if(self.isNvidiagpu==1):
+        if(self.isNvidiagpu==1 or self.isAMDgpu==1):
             g.Widget.queue_draw(self.gpuSidePaneWidget.gpusidepanedrawarea)
 
         # Returning True to run periodically
